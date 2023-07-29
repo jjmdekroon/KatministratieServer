@@ -71,3 +71,6 @@ Logging kan je vinden in /var/log/aapche2
 De proxy zet je aan met de volgende commando's
 - sudo a2ensite sample.conf
 - sudo apachectl configtest
+
+
+[1^]: https://www.syncfusion.com/blogs/post/hosting-multiple-asp-net-core-apps-in-ubuntu-linux-server-using-apache.aspx

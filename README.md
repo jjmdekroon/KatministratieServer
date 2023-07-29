@@ -72,4 +72,18 @@ De proxy zet je aan met de volgende commando's
 - sudo a2ensite sample.conf
 - sudo apachectl configtest
 
-[Bron](https://www.syncfusion.com/blogs/post/hosting-multiple-asp-net-core-apps-in-ubuntu-linux-server-using-apache.aspx)
+## Installeren mysql server
+- sudo apt install mysql-server
+- sudo systemctl start mysql.service
+- sudo mysql
+- mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '<PASSWORD>';
+- mysql> exit
+- mysql -u root -p
+- mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH auth_socket;
+- mysql> exit
+
+Controleer de installatie met systemctl **status mysql.service**
+
+>[ref: 1](https://www.syncfusion.com/blogs/post/hosting-multiple-asp-net-core-apps-in-ubuntu-linux-server-using-apache.aspx)
+
+>[ref: 2](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04)

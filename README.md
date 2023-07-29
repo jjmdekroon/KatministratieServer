@@ -1,6 +1,6 @@
 # Katministratie
 
-Het was de bedoellingg de katministratie eerst op Azure te laten draaien maar daar waren de kosten niet duidelijk genoeg. Dus hier wordt beschreven hoe de lokale webserver voor de katministratie wordt opgezet. De info is gehaald uit [^1]
+Het was de bedoellingg de katministratie eerst op Azure te laten draaien maar daar waren de kosten niet duidelijk genoeg. Dus hier wordt beschreven hoe de lokale webserver voor de katministratie wordt opgezet. De info is gehaald uit.
 
 In eerste instantie getest met een Ubuntu server die in een VM draait
 
@@ -72,5 +72,4 @@ De proxy zet je aan met de volgende commando's
 - sudo a2ensite sample.conf
 - sudo apachectl configtest
 
-
-[1^]: https://www.syncfusion.com/blogs/post/hosting-multiple-asp-net-core-apps-in-ubuntu-linux-server-using-apache.aspx
+[Bron](https://www.syncfusion.com/blogs/post/hosting-multiple-asp-net-core-apps-in-ubuntu-linux-server-using-apache.aspx)

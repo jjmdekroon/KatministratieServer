@@ -22,8 +22,8 @@ internal class AuthorisationHandler : IAuthorizationHandler
     {
         var userId = -1;
         try 
-        { 
-            _ = int.TryParse(context.User.Claims.First(c => c.Type == "id").Value, out userId); 
+        {
+            _ = int.TryParse(context.User.Claims.First(c => c.Type == "user").Value, out userId); 
         } 
         catch (Exception) 
         { 

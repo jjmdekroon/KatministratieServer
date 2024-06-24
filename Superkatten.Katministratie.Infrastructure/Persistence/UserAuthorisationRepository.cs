@@ -64,12 +64,9 @@ public class UserAuthorisationRepository : IUserAuthorisationRepository
         var userDto = _context.Users
             .SingleOrDefault(x => x.Username == userName);
 
-        if (userDto is null)
-        {
-            throw new DatabaseException($"user with name '{userName}' is unknown in the database");
-        }
-
-        return _userMapper.MapRepositoryToDomain(userDto);
+        return userDto is null
+            ? throw new DatabaseException($"user with name '{userName}' is unknown in the database")
+            : _userMapper.MapRepositoryToDomain(userDto);
     }
 
     public void StoreUser(User user)

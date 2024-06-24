@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Superkatten.Katministratie.Infrastructure.Interfaces;
 using Superkatten.Katministratie.Infrastructure.Mapper;
@@ -10,9 +11,12 @@ namespace Superkatten.Katministratie.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            //services.AddDbContext.UseSqlite("Data Source=./katministratie.db;", options =>
-            //{
-            //});
+            services.AddDbContext<SuperkattenDbContext>(
+                //options =>
+                //{
+                //    options.UseSqlite("Data Source=./katministratie.db;");
+                //}
+            );
 
             services.AddTransient<ISuperkattenRepository, SuperkattenRepository>();
             services.AddTransient<ILocationRepository, LocationRepository>();

@@ -3,7 +3,6 @@ using Superkatten.Katministratie.Application.Exceptions;
 using Superkatten.Katministratie.Contract.Authenticate;
 using Superkatten.Katministratie.Domain.Entities;
 using Superkatten.Katministratie.Infrastructure.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;

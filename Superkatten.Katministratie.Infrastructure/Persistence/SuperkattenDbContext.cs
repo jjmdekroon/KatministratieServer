@@ -2,11 +2,14 @@
 using Superkatten.Katministratie.Domain.Entities;
 using Superkatten.Katministratie.Domain.Entities.Locations;
 using Superkatten.Katministratie.Infrastructure.Entities;
+using System;
 
 namespace Superkatten.Katministratie.Infrastructure.Persistence;
 
 public class SuperkattenDbContext : DbContext
 {
+    public string DbPath { get; }
+
     public DbSet<UserDto> Users => Set<UserDto>();
     public DbSet<Superkat> SuperKatten => Set<Superkat>();
     public DbSet<CatchOrigin> CatchOrigins => Set<CatchOrigin>();
@@ -17,6 +20,16 @@ public class SuperkattenDbContext : DbContext
     public SuperkattenDbContext(DbContextOptions<SuperkattenDbContext> options) 
         : base(options)
     {
+        var folder = Environment.SpecialFolder.LocalApplicationData;
+        var path = Environment.GetFolderPath(folder);
+        DbPath = System.IO.Path.Join("c:\\temp", "katministratie.db");
+
+        Database.EnsureCreated();
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlite($"Data Source={DbPath}");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

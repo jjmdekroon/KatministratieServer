@@ -1,0 +1,34 @@
+﻿@page "/OverviewGastgezinnen"
+
+@using Blazorise.SpinKit
+@using Superkatten.Katministratie.Host.Components.GastgezinComponents;
+@using Superkatten.Katministratie.Contract.Entities.Locations;
+
+<PageTitle>Gastgezinnen</PageTitle>
+
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnCreateGastgezin">Toevoegen gastgezin</Button>
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnBackHome">Terug</Button>
+
+<Divider />
+
+<Div Position="Position.Absolute.Top.Is50.Start.Is50.Translate.Middle">
+@if (_gastgezinnen is null)
+{    
+    <SpinKit Type="SpinKitType.Chase" Size="60px"/>
+    return;
+}
+
+@if (!_gastgezinnen.Any())
+{
+    <span>Geen gastgezinnen gevonden</span>
+    return;
+}
+</Div>
+
+
+@foreach (var location in _gastgezinnen)
+{
+    <GastgezinComponent 
+        Gastgezin=@location 
+        OnGastgezinDeleted=@OnGastgezinDeleted/>
+}

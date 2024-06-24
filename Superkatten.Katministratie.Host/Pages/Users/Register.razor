@@ -1,0 +1,42 @@
+﻿@page "/register"
+
+<Div Class="container">
+    <fieldset>
+        <Field>
+            <FieldLabel>Naam</FieldLabel>
+            <FieldBody>
+                <TextEdit Placeholder="Naam / Roepnaam" MaskType="MaskType.RegEx" EditMask="^[a-zA-Z ]*$" @bind-Text="_name" />
+            </FieldBody>
+        </Field>
+
+        <Field>
+            <FieldLabel>Login naam</FieldLabel>
+            <FieldBody>
+                <TextEdit Placeholder="Gebruikersnaam" MaskType="MaskType.RegEx" EditMask="^[a-z]*$" @bind-Text="_userName" />
+            </FieldBody>
+        </Field>
+
+        <Field>
+            <FieldLabel>Email</FieldLabel>
+            <FieldBody>
+                <TextEdit Placeholder="email" Role="TextRole.Email" @bind-Text="@_email" />
+            </FieldBody>
+        </Field>
+
+        <Field>
+            <FieldLabel>Wachtwoord</FieldLabel>
+            <FieldBody>
+                <TextEdit Placeholder="Wachtwoord" Role="TextRole.Password" @bind-Text="@_password" />
+            </FieldBody>
+        </Field>
+    </fieldset>
+    
+    @if (!string.IsNullOrEmpty(_error))
+    {
+        <div class="alert alert-danger mt-3 mb-0">@_error</div>
+    }
+
+    <Button Size="Size.Medium" Color="Color.Primary" Clicked="@HandleValidSubmit">Ok</Button>
+    <Button Size="Size.Medium" Color="Color.Primary" Clicked="@OnBackHome">Terug</Button>
+</Div>
+

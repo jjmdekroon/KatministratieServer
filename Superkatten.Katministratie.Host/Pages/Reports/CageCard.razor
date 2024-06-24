@@ -1,0 +1,57 @@
+﻿@page "/CageCard"
+
+@using Superkatten.Katministratie.Contract.Entities
+@using Superkatten.Katministratie.Host.Components
+@using Superkatten.Katministratie.Host.Components.SuperkatComponents
+
+@if (_catAreas is null)
+{
+    return;
+}
+
+@if (_isSending)
+{
+  <Div Position="Position.Absolute.Top.Is50.Start.Is50.Translate.Middle">
+      <SpinKit Type="SpinKitType.Chase" Size="60px"/>
+  </Div>
+  return;
+}
+
+<Divider />
+
+<SelectListComponent 
+    TItem="CatArea" 
+    DefaultText="Selecteer ruimte"
+    ItemNames="@_catAreaNames"
+    Items="@_catAreas" 
+    OnSelectionChanged="@UpdateCatAreaDataAsync"/>
+    
+<SelectListComponent
+    TItem="int" 
+    DefaultText="Selecteer hok nummer"
+    EmptyListText="Selecteer eerst gebied"
+    ItemNames="@_cageNumberNames"
+    Items="@_cageNumbers"
+    OnSelectionChanged="@UpdateSuperkattenListAsync"/>
+
+<Field>@SuperkattenMessage</Field>
+@if (Superkatten.Count > 1)
+{
+  <Field Border="Border.Is1">
+      @foreach(var superkat in Superkatten)
+      {
+        <Button Disabled Color="Color.Primary">@superkat.UniqueNumber</Button>
+      }
+  </Field>
+}
+
+<Row>
+  <Column>
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnOk">Ok</Button>
+  </Column>
+
+  <Column>
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnCancel">Terug</Button>
+  </Column>
+</Row>
+

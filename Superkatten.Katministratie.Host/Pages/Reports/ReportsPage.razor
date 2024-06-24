@@ -1,0 +1,43 @@
+﻿@page "/ReportsPage"
+
+@using Superkatten.Katministratie.Host.Components.Helpers
+
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnBackHome">Terug</Button>
+
+<Container>
+    <Field Padding="Padding.Is2">
+        <HeaderItem Titel="Kooikaart"/>
+        <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnEmailCageCard">
+            <div class="row justify-content-md-center">
+                <div class="col-4 text-right"><span class="material-icons">text_snippet</span></div>
+                <div class="col-5 text-left">Kooikaart</div>
+            </div>
+        </Button>
+    </Field>
+    
+    <Field Padding="Padding.Is2">
+        <HeaderItem Titel="Waardig dier rapporten" />
+        <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnCreateWaardigDierInventoryReport">
+            <div class="row justify-content-md-center">
+                <div class="col-4 text-right"><span class="material-icons">text_snippet</span></div>
+                <div class="col-5 text-left">Inventarisatie</div>
+            </div>
+        </Button>
+    </Field>
+    
+    <Field Padding="Padding.Is2">
+        <HeaderItem Titel="Neutraliseren" />
+        <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnNotNeutralizedInRefugeReport">
+            <div class="row justify-content-md-center">
+                <div class="col-4 text-right"><span class="material-icons">text_snippet</span></div>
+                <div class="col-5 text-left">Neutralisatie opvang</div>
+            </div>
+        </Button>
+        <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnNotNeutralizedAdopteesReport">
+            <div class="row justify-content-md-center">
+                <div class="col-4 text-right"><span class="material-icons">text_snippet</span></div>
+                <div class="col-5 text-left">Neutralisatie adoptie</div>
+            </div>
+        </Button>
+    </Field>
+</Container>

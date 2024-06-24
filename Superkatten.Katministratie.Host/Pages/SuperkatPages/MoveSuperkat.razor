@@ -1,0 +1,55 @@
+﻿@page "/MoveSuperkat/{SuperkatId:guid?}"
+
+@using Superkatten.Katministratie.Contract.Entities
+@using Superkatten.Katministratie.Host.Components
+@using Superkatten.Katministratie.Host.Components.Helpers
+
+<h3>Verplaats superkat naar een andere locatie</h3>
+
+@if (_superkatten is null || _catAreas is null)
+{
+    return;
+}
+
+<Container>
+
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnCancel">
+        Terug
+    </Button>
+    @if (IsSelectionComplete)
+    {
+        <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnOk">
+            Verplaats
+        </Button>
+    }
+
+    <WaitForItComponent Visible="@_superkatten.Any()" />
+
+
+    @if (_forceSelectedSuperkat)
+    {
+        <TextEdit ReadOnly Text="@SuperkatUniqueNumber" />
+    }
+    else
+    {
+        <SelectListComponent DefaultText="Selecteer superkat"
+            InitialSelectedItem="@InitialSuperkat"
+            TItem="Superkat"
+            ItemNames="@_superkatNames"
+            Items="@_superkatten"
+            OnSelectionChanged="@OnSelectSuperkat" />
+    }
+
+    <SelectListComponent DefaultText="Selecteer ruimte"
+                         TItem="CatArea"
+                         ItemNames="@_catAreaNames"
+                         Items="@_catAreas"
+                         OnSelectionChanged="@OnSelectCatArea" />
+
+    <SelectListComponent DefaultText="Selecteer kooi"
+                         TItem="int"
+                         ItemNames="@_cageNumberNames"
+                         Items="@_cageNumbers"
+                         OnSelectionChanged="@OnSelectCageNumber" />
+
+</Container>

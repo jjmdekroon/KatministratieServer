@@ -1,0 +1,32 @@
+﻿@using Superkatten.Katministratie.Host.Entities;
+@using Superkatten.Katministratie.Host.Components.Helpers
+
+@typeparam TItem
+
+@if (!_selectionItemData.Any())
+{
+    <Field>
+        <FieldLabel>@DefaultText</FieldLabel>
+        <TextEdit Text=@EmptyListText Disabled />
+    </Field>  
+    return;
+}
+
+<Field>
+  
+  @if (!string.IsNullOrEmpty(DefaultText))
+  {
+      <HeaderItem Titel="@DefaultText"></HeaderItem>
+  }
+
+  <FieldBody>
+    <SelectList TItem="SelectListItem<TItem>"
+                TValue="int"
+                Data="@_selectionItemData"
+                TextField="@((item) => item.ItemName)"
+                ValueField="@((item) => item.KeyId)"
+                SelectedValue="_selectedValueIndex"
+                SelectedValueChanged="@OnSelectedValueChanged"
+                DefaultItemText="@DefaultText" />
+  </FieldBody>
+</Field>

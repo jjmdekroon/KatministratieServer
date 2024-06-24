@@ -1,0 +1,31 @@
+﻿@page "/AssignSuperkatten/{GastgezinId:guid}"
+@using Superkatten.Katministratie.Host.Components.SuperkatComponents
+
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnClose">Terug</Button>
+      
+<Div Margin="Margin.Is2" Border="Border.Is0">
+    <Field><h3>Gastgezin: @_gastgezin?.Naw.Name</h3></Field>
+    <Field>Kies de superkatten uit de beschikbare katten en koppel deze aan dit gastgezin.</Field>
+</Div>
+
+@if (AvailableSuperkatten is null || AssignedSuperkatten is null)
+{
+    <Div Margin="Margin.Is2">
+        <Row>
+            <Column ColumnSize="ColumnSize.Is1">
+                <SpinKit Type="SpinKitType.Chase" Size="30px" />
+            </Column>
+        </Row>
+    </Div>
+    return;
+}
+
+
+<SuperkatSelectorComponent 
+    AvailableSuperkatten="@AvailableSuperkatten"
+    SelectedSuperkatten="@AssignedSuperkatten"
+    AvailableCollectionHeader="Beschikbare katten:"
+    SelectedCollectionHeader="Katten bij gastgezin"
+    AddSuperkat="(superkat) => { AddSuperkatToSelectionAsync(superkat); }"
+    RemoveSuperkat="(superkat) => { RemoveSuperkatFromSelection(superkat); }" />
+

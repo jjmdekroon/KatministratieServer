@@ -1,0 +1,182 @@
+﻿@page "/CreateSuperkat"
+
+@using Blazorise.Snackbar
+@using Superkatten.Katministratie.Host.Api
+@using Superkatten.Katministratie.Host.Components
+@using Superkatten.Katministratie.Host.Components.SuperkatComponents
+@using Superkatten.Katministratie.Host.Entities
+@using Superkatten.Katministratie.Host.Services
+@using Superkatten.Katministratie.Contract.Entities
+@using Superkatten.Katministratie.Host.Components.Helpers
+
+<PageTitle>Nieuwe superkat</PageTitle>
+
+@if (!_isInitialized)
+{
+    <Div Position="Position.Absolute.Top.Is50.Start.Is50.Translate.Middle">
+        <SpinKit Type="SpinKitType.Chase" Size="40px"/>
+    </Div>
+    return;
+}
+
+<SnackbarStack @ref="_snackbarStack" Location="SnackbarStackLocation.Center" />
+
+<HeaderItem Titel="Vang informatie"></HeaderItem>
+<Field>
+    <FieldLabel>Vanglokatie</FieldLabel>
+    <Autocomplete TItem="CatchOrigin"
+              TValue="Guid"
+              Data="@CatchOrigins"
+              TextField="@(( item ) => item.Name)"
+              ValueField="@(( item ) => item.Id)"
+              @bind-SelectedValue="@_catchOriginNameId"
+              @bind-SelectedText="@CatchOriginName"
+              Placeholder="..."
+              Filter="AutocompleteFilter.Contains"
+              FreeTyping
+              CustomFilter="@(( item, searchValue ) => item.Name.IndexOf( searchValue, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0 )">
+        <NotFoundContent> Sorry... @context niet gevonden :( </NotFoundContent>
+    </Autocomplete>
+</Field>
+
+<Row>
+    <Column ColumnSize="ColumnSize.Is8">
+        <SelectListComponent DefaultText="Ruimte"
+                             InitialSelectedItem="_selections.CatArea"
+                             TItem="CatArea"
+                             Items="@_catAreaTypes"
+                             ItemNames="@_catAreaTypeNames"
+                             OnSelectionChanged="@OnSelectCatArea" />
+    </Column>
+    <Column ColumnSize="ColumnSize.Is4">
+        @if (_cageNumbers.Count > 1)
+        {
+            <SelectListComponent DefaultText="Hok"
+                             TItem="int"
+                             Items="@_cageNumbers"
+                             ItemNames="@_cageNumberNames"
+                             OnSelectionChanged="@_selections.Store" />
+        }
+        else
+        {
+            <HeaderItem Titel="Hok"></HeaderItem>
+            <Field>Geen hokken</Field>
+        }
+    </Column>
+</Row>
+
+<Field>
+  <SelectListComponent DefaultText="Vanglocatie type"
+    InitialSelectedItem="@_selections.CatchOriginType"
+    TItem="CatchOriginType" 
+    Items="@_catchOriginTypes" 
+    ItemNames="@_catchOriginTypeNames"
+    OnSelectionChanged="@_selections.Store"/>
+</Field>
+<Field>
+    <FieldLabel>Datum</FieldLabel>
+    <DateEdit TValue="DateTime?" @bind-Date="@CatchDate" />
+</Field>
+
+<SelectListComponent DefaultText="Gedrag"
+    InitialSelectedItem="@_selections.CatBehaviour"
+    TItem="CatBehaviour" 
+    Items="@_catBehaviourTypes" 
+    ItemNames="@_catBehaviourTypeNames"
+    OnSelectionChanged="@_selections.Store"/>
+
+<HeaderItem Titel="Medicatie"></HeaderItem>
+<Check TValue="bool" @bind-Checked="@StrongHoldGiven">Stronghold gegeven</Check>
+
+<HeaderItem Titel="Extra info"></HeaderItem>
+<Check TValue="bool" @bind-Checked="@Retour">Retour</Check>
+
+<SelectListComponent DefaultText="Leeftijdscategorie"
+    InitialSelectedItem="_selections.AgeCategory"
+    TItem="AgeCategory" 
+    Items="@_ageCategoryTypes" 
+    ItemNames="@_ageCategoryTypeNames"
+    OnSelectionChanged="@_selections.Store"/>
+<Row>
+    <Column ColumnSize="ColumnSize.Is3">
+        <NumericEdit Value="5" @bind-Text="@EstimatedWeeksOld"/>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is9">
+        @switch (_selections.AgeCategory)
+        {
+        case AgeCategory.Kitten:
+            <TextEdit Readonly Placeholder="weken oud" />
+            break;
+        case AgeCategory.Juvenile:
+            <TextEdit Readonly Placeholder="maanden oud" />
+            break;
+        case AgeCategory.Adult:
+            <TextEdit Readonly Placeholder="jaren oud" />
+            break;
+        default:
+            <TextEdit Readonly Placeholder="??" />
+            break;
+        }
+    </Column>
+</Row>
+
+<HeaderItem Titel="Kleur"></HeaderItem>
+<Field>
+    <Field>
+        <Autocomplete TItem="CatColor"
+                      TValue="string"
+                      Data="@CatColors"
+                      TextField="@((item) => item.Name)"
+                      ValueField="@((item) => item.Id)"
+                      @bind-SelectedValue="@_selectedSearchValue"
+                      @bind-SelectedText="@CatColor"
+                      Placeholder="Zoeken..."
+                      Filter="AutocompleteFilter.Contains"
+                      FreeTyping
+                      CustomFilter="@(( item, searchValue ) => item.Name.IndexOf( searchValue, 0, StringComparison.CurrentCultureIgnoreCase ) >= 0 )">
+            <NotFoundContent> Sorry... @context niet gevonden :( </NotFoundContent>
+        </Autocomplete>
+    </Field>
+</Field>
+
+<SelectListComponent DefaultText="Geslacht"
+    InitialSelectedItem="_selections.Gender"
+    TItem="Gender" 
+    Items="@_genderTypes" 
+    ItemNames="@_genderTypeNames"
+    OnSelectionChanged="@_selections.Store"/>
+
+<HeaderItem Titel="Voer"></HeaderItem>
+<Row>
+  <Column ColumnSize="ColumnSize.Is2.OnDesktop.Is4.OnMobile">
+    <HeaderItem Titel="Nat voer"></HeaderItem>
+    <Check TextAlignment="TextAlignment.Start" TValue="bool" @bind-Checked="@WetFoodAllowed">Nat voer toestaan ?</Check>
+  </Column>
+  <Column ColumnSize="ColumnSize.Is10.OnDesktop.Is8.OnMobile">
+    <SelectListComponent DefaultText="Type eten"
+        InitialSelectedItem="_selections.FoodType"
+        TItem="FoodType" 
+        Items="@_foodTypes" 
+        ItemNames="@_foodTypeNames"
+        OnSelectionChanged="@_selections.Store"/>
+  </Column>
+</Row>
+
+<SelectListComponent DefaultText="Soort grit"
+    InitialSelectedItem="_selections.LitterGranuleType"
+    TItem="LitterGranuleType" 
+    Items="@_litterGranuleTypes" 
+    ItemNames="@_litterGranuleTypeNames"
+    OnSelectionChanged="@_selections.Store"/>
+<Divider />
+
+<Row>
+  <Column>
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnStopAndReturn">Terug</Button>
+  </Column>
+  <Column>
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnAddSuperkat">Toevoegen</Button>
+  </Column>
+</Row>
+
+<Divider />

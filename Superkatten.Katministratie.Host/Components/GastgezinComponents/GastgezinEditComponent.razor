@@ -1,0 +1,27 @@
+﻿<Button Size="Size.Large" Color="Color.Primary" Clicked="@OnEditOk">Ok</Button>
+<Button Size="Size.Large" Color="Color.Primary" Clicked="@OnEditCancel">Cancel</Button>
+
+<Field>
+    <FieldLabel>Naam</FieldLabel>
+    <TextEdit @bind-Text="@_gastgezinData.Name" />
+</Field>
+<Field>
+    <FieldLabel>Address</FieldLabel>
+    <TextEdit @bind-Text="@_gastgezinData.Address" />
+</Field>
+<Field>
+    <FieldLabel>Postcode</FieldLabel>
+    <TextEdit @bind-Text="@_gastgezinData.Postcode" />
+</Field>
+<Field>
+    <FieldLabel>Woonplaats</FieldLabel>
+    <TextEdit @bind-Text="@_gastgezinData.City" />
+</Field>
+<Field>
+    <FieldLabel>Telefoon nummer</FieldLabel>
+    <TextEdit @bind-Text="@_gastgezinData.Phone" />
+</Field>
+<Field>
+    <FieldLabel>Email</FieldLabel>
+    <TextEdit @bind-Text="@_gastgezinData.Email" />
+</Field>

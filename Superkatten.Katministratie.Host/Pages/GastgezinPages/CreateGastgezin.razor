@@ -1,0 +1,37 @@
+﻿@page "/CreateGastgezin"
+
+@using Superkatten.Katministratie.Host.Services
+
+<h3>Aanmaken van een gastgezin</h3>
+
+<PageTitle>Nieuwe superkat</PageTitle>
+
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnOk">Ok</Button>
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnCancel">Terug</Button>
+
+<Divider />
+
+<Field>
+    <FieldLabel>Naam:</FieldLabel>
+    <TextEdit Placeholder="Naam gezin" @bind-Text="@GastgezinData.Name"/>
+</Field>
+<Field>
+    <FieldLabel>Adres:</FieldLabel>
+    <TextEdit Placeholder="Adres" @bind-Text="@GastgezinData.Address"/>
+</Field>
+<Field>
+    <FieldLabel>Postcode:</FieldLabel>
+    <TextEdit Placeholder="Postcode" @bind-Text="@GastgezinData.Postcode" />
+</Field>
+<Field>
+    <FieldLabel>Woonplaats:</FieldLabel>
+    <TextEdit Placeholder="Woonplaats" @bind-Text="@GastgezinData.City" />
+</Field>
+<Field>
+    <FieldLabel>Telefoon:</FieldLabel>
+    <TextEdit Placeholder="Telefoon" @bind-Text="@GastgezinData.Phone" />
+</Field>
+<Field>
+    <FieldLabel>Email:</FieldLabel>
+    <TextEdit Placeholder="Email" @bind-Text="@GastgezinData.Email" />
+</Field>

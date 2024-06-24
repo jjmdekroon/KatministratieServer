@@ -1,0 +1,26 @@
+﻿@page "/NotNeutralized"
+
+@using Superkatten.Katministratie.Host.Components
+@using Superkatten.Katministratie.Host.Components.Helpers
+@using Superkatten.Katministratie.Host.Components.SuperkatComponents
+@using Superkatten.Katministratie.Host.Entities
+
+<PageTitle>Niet geneutraliseerd </PageTitle>
+
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnBackHome">Terug</Button>
+
+<WaitForItComponent Visible="Superkatten.Any()" />
+
+<Divider />
+
+<SelectListComponent DefaultText="Selecteer locatie"
+                     TItem="IsNeutralizedAtLocationView"
+                     ItemNames="@_neutralizeFilterOptionNames"
+                     Items="@_neutralizeFilterOptions"
+                     OnSelectionChanged="@OnSelectFilter" />
+
+@foreach (var superkat in Superkatten)
+{
+    <SimpleSuperkatComponent Superkat=superkat />
+}
+

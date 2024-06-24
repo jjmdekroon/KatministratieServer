@@ -1,0 +1,73 @@
+﻿@using Blazorise.SpinKit
+@using Superkatten.Katministratie.Host.Components
+@using Superkatten.Katministratie.Host.Components.SuperkatComponents.Action
+@using Superkatten.Katministratie.Host.Entities
+
+@if (_superkatView is null)
+{
+    <SpinKit Type="SpinKitType.Chase" Size="60px"/>
+    return;
+}
+
+<Collapse Visible="@_superkatView.IsVisible">
+    <CollapseHeader Margin="Margin.Is0">
+        <Heading Size="HeadingSize.Is5">
+
+          <Row>
+               <Column ColumnSize="ColumnSize.Is2">
+                  <Button Clicked="@(()=>_superkatView.IsVisible = !_superkatView.IsVisible)">
+                      <span class="material-icons">
+                          reorder
+                      </span>
+                  </Button>
+               </Column>
+
+              <Column>
+                  <SimpleSuperkatComponent Superkat="@_superkatView.Superkat" />
+              </Column>            
+            
+          </Row>
+        </Heading>
+    </CollapseHeader>
+    <CollapseBody>
+        <Row>
+            <Column>
+                @if (_superkatView.Superkat.Photo is not null && _superkatView.Superkat.Photo.Length > 0)
+                {
+                    <Figure>
+                        <FigureImage Rounded Source="@GetSuperkatImage(_superkatView.Superkat.Photo)" />
+                    </Figure>
+                }
+                else
+                {
+                    <Figure>
+                        <FigureImage Rounded Source="./Images/superkat.jpg" />
+                        <FigureCaption><Button Clicked="() => OnClickCreatePhoto(_superkatView.Superkat)">Maak een foto</Button></FigureCaption>
+                    </Figure>
+                }
+            </Column>
+
+            <Column>
+                <Row><SuperkatStateComponent State="@_superkatView.Superkat.State" /></Row>
+                <Row><Span class="material-icons">badge</Span>
+                    @if (string.IsNullOrEmpty(_superkatView.Superkat.Name)) 
+                    {
+                      <Span>- ? -</Span>
+                    }
+                    else
+                    {
+                        <Span>_superkatView.Superkat.Name</Span>
+                    }
+                </Row>
+                <Row><Span class="material-icons">reply</Span> @_superkatView.Superkat.Retour</Row>
+                <Row><Span class="material-icons">view_agenda</Span> @_superkatView.Superkat.Reserved</Row>
+                <Row><Span class="material-icons">place</Span> @_superkatView.Superkat.CatchOrigin.Type.ToString()</Row>
+                <Row><Span class="material-icons">place</Span> @_superkatView.Superkat.CatchOrigin.Name</Row>
+                <Row><span class="material-icons">catching_pokemon</span> @_superkatView.Superkat.CatchDate.ToShortDateString()</Row>
+                <Row><Span class="material-icons">cake</Span> @_superkatView.Superkat.Birthday.ToShortDateString()</Row>
+            </Column>
+        </Row>
+    </CollapseBody>
+  </Collapse>
+
+

@@ -1,0 +1,44 @@
+﻿@page "/OverviewMedicalProcedures"
+
+@using Blazorise.SpinKit
+
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnBack">Terug</Button>
+
+<Divider />
+
+@if (!MedicalProcedureInformationDictionary.Any())
+{    
+    <Div Position="Position.Absolute.Top.Is50.Start.Is50.Translate.Middle">
+        <SpinKit Type="SpinKitType.Chase" Size="60px"/>
+    </Div>
+    return;
+}
+
+
+@foreach (var key in MedicalProcedureInformationDictionary.Keys)
+{
+    <Div Margin="Margin.Is1" Border="Border.Is1">
+
+        <Row Margin="Margin.Is2" Background="Background.Success">
+            <Div Margin="Margin.Is1.FromTop.Is2.FromBottom.Is4.FromStart" Style="font-size:20px">
+                <b>@key</b>
+            </Div>
+        </Row>
+
+        @foreach (var item in MedicalProcedureInformationDictionary[key])
+        {
+            <Fields Margin="Margin.Is0">
+                <Field>
+                    @item.Timestamp.ToShortDateString()<br />
+                    <Div>
+                        <Div Style="font-size:10px;color:grey">@item.Timestamp.ToLocalTime().ToString("hh:mm")</Div>
+                    </Div>
+                </Field>
+                <Field>@LocalizeMedicalProcedure(item.ProcedureType)</Field>
+                <Field>@item.Remark</Field>
+            </Fields>
+            <hr/>
+        }
+    </Div>
+
+}

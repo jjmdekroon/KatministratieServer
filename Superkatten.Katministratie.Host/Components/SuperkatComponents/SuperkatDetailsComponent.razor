@@ -1,0 +1,13 @@
+﻿@using Superkatten.Katministratie.Contract.Entities;
+
+@if (SuperkatView is null)
+{
+    <SpinKit Type="SpinKitType.CircleFade" />
+    return;
+}
+
+<Div>
+    <Field>
+        Locatie-hok: @SuperkatView.Superkat.Location.LocationName
+    </Field>
+</Div>

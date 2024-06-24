@@ -1,0 +1,18 @@
+﻿@page "/Adoption/Overview"
+@using Superkatten.Katministratie.Host.Components.Adoptions
+
+
+<h1>Adoptanten</h1>
+
+<PageTitle>Status adoptie</PageTitle>
+
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnCancel">Terug</Button>
+
+<Divider />
+
+<Span>Hieronder staan de adoptanten en de status van het adoptieproces waar ze in zitten.</Span>
+
+@foreach(var adopter in _adopters)
+{
+  <AdopterComponent Adoptant=adopter/>
+}

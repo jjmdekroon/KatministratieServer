@@ -1,0 +1,120 @@
+﻿@page "/Adoption/{AdopterGuid:guid}/Start"
+
+@using Microsoft.AspNetCore.Authorization
+
+<PageTitle>Start adoptie</PageTitle>
+<Modal @ref="_authenticationDialog">
+    <ModalContent Centered>
+        <ModalHeader>
+            <ModalTitle>Inloggen</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            @if (@_isLoggingIn)
+            {
+                <Div Position="Position.Absolute.Top.Is50.Start.Is50.Translate.Middle">
+                    <SpinKit Type="SpinKitType.Chase" Size="40px" />
+                </Div>
+                <Field>
+                    <TextEdit Placeholder="@_loginModel.Username" />
+                </Field>
+            }
+            else
+            {
+                <Field>
+                    <FieldLabel>Gebruikersnaam</FieldLabel>
+                    <TextEdit @ref="_textEditLoginName" Role="TextRole.Text"
+                          MaskType="MaskType.RegEx"
+                          EditMask="^[a-zA-Z]*$"
+                          @bind-Text="@_loginModel.Username"
+                          Placeholder="Vul de gebruikersnaam in..."
+                          KeyPress="@OnKeyPress" />
+                </Field>
+                <Field>
+                    <FieldLabel>Wachtwoord</FieldLabel>
+                    <TextEdit Role="TextRole.Password"
+                          @bind-Text="@_loginModel.Password"
+                          Placeholder="Vul je wachtwoord in..."
+                          KeyPress="@OnKeyPress" />
+                </Field>
+            }
+        </ModalBody>
+        <ModalFooter>
+            <Button Disabled="@_isLoggingIn" Loading="@_isLoggingIn" Color="Color.Primary" Clicked="@SaveAndHideModal">
+                Ok
+            </Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@if (!UserLoginService.IsAuthenticated)
+{
+    <Container>
+        <Field Class="border p-3 mt-5" Style="border-radius:20px">
+            <Div Style="font-size:24px;">
+                Je bent niet ingelogd.
+                <br />
+                <br />
+                Zor ervoor dat je de juiste gebruikersnaam en wachtwoord gebruikt uit de email van superkatten.
+            </Div>
+        </Field>
+    </Container>
+    return;
+}
+
+@if (_superkatten.Count <= 0)
+{
+    <p>Geen superkatten gevonden, neem contact op met het gastgezin</p>
+    return;
+}
+
+<h2>Start van het adoptieproces</h2>
+
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnOk">Ok</Button>
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnCancel">Terug</Button>
+
+<Divider />
+
+<Container>
+  <Div>
+    <Span>
+      Vul hier je gegevens in zodat we de adoptiepapieren in orde kunnen maken.
+      Deze zal je ontvangen op het email adres wat je hebt opgegeven.
+      De adoptiekatten zijn:
+    </Span>
+    
+    <Span>
+    @foreach(var superkat in _superkatten)
+    {
+      <div> @superkat.UniqueNumber (@superkat.Name)</div>
+    }
+    </Span>
+
+    <Span>
+      Vul hieronder je adres gegevens in:
+    </Span>
+    <Span>
+      <Field>
+        <FieldLabel>Naam:</FieldLabel>
+        <FieldBody><TextEdit Text="@_adopterName"></TextEdit></FieldBody>
+      </Field>
+      <Field>
+          <FieldLabel>Adres:</FieldLabel>
+          <FieldBody><TextEdit Text="@_adopterAddress"></TextEdit></FieldBody>
+      </Field>
+      <Field>
+          <FieldLabel>Postcode:</FieldLabel>
+          <FieldBody><TextEdit Text="@_adopterPostcode"></TextEdit></FieldBody>
+      </Field>
+      <Field>
+          <FieldLabel>Woonplaats:</FieldLabel>
+          <FieldBody><TextEdit Text="@_adopterCity"></TextEdit></FieldBody>
+      </Field>
+      <Field>
+          <FieldLabel>Telfoon:</FieldLabel>
+          <FieldBody><TextEdit Text="@_adopterPhone"></TextEdit></FieldBody>
+      </Field>
+
+    </Span>
+  </Div>
+</Container>

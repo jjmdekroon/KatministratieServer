@@ -1,0 +1,49 @@
+﻿@page "/CreateSuperkatPhoto/{SuperkatId:guid?}"
+
+@using Superkatten.Katministratie.Host.Components
+@using Superkatten.Katministratie.Host.Entities
+
+@using ContractEntities = Superkatten.Katministratie.Contract.Entities
+
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnCancel">Terug</Button>
+
+@if (IsInitializing)
+{
+  <Div Position="Position.Absolute.Top.Is50.Start.Is50.Translate.Middle">
+    <SpinKit Type="SpinKitType.Chase" Size="30px"/>
+  </Div>
+  return;
+}  
+
+<SelectListComponent DefaultText="Selecteer superkat"
+  InitialSelectedItem="@InitialSuperkat"
+  TItem="ContractEntities.Superkat"     
+  ItemNames="@_superkatNames"
+  Items="@_superkatten" 
+  OnSelectionChanged="@OnSelectSuperkat" />
+
+<Field Border="Border.Is1.Danger" Margin="Margin.Is2">
+  <Row Margin="Margin.Is2" TextAlignment="TextAlignment.Center">
+        <video class="p-5" id="videoFeed" style="width:100%" width="640" height="480" />
+        <canvas class="d-none" id="currentFrame" width="640" height="480" />
+  </Row>
+</Field>
+
+<Row>
+  <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnOk" Disabled="@SuperkatIsSelected">
+    <span class="material-icons" fontSize="large">
+      fiber_manual_record
+    </span>
+  </Button>
+</Row>
+
+<Divider />
+
+<SelectListComponent DefaultText="Selecteer camera"
+  TItem="MediaDeviceInfoModel"
+  ItemNames="@_cameraDeviceNames"
+  Items="@_cameraDevices"
+  OnSelectionChanged="@OnSelectCameraDeviceAsync" />
+
+
+

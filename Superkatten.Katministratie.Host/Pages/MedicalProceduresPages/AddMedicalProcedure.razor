@@ -1,0 +1,40 @@
+﻿@page "/AddMedicalProcedure/{SuperkatId:guid}"
+
+@using Blazorise.Components
+@using Superkatten.Katministratie.Host.Components
+@using Superkatten.Katministratie.Contract.Entities;
+
+@if (_superkat is null)
+{
+    return;
+}
+
+<h3>Toevoegen medische handeling voor kat @_superkat.UniqueNumber</h3>
+
+<Divider />
+
+<Field>
+    <FieldLabel>Datum</FieldLabel>
+    <DateEdit TValue="DateTime" @bind-Date="@TimeStamp" />
+</Field>
+
+<SelectListComponent 
+    TItem="MedicalProcedureType" 
+    DefaultText="Selecteer handeling"
+    ItemNames="@_medialProcedureNames"
+    Items="@_medicalProcedures" 
+    OnSelectionChanged="@OnSelectMedialProcedure"/>
+
+<Field Margin="Margin.Is1">
+    <FieldLabel>Opmerkingen</FieldLabel>
+    <MemoEdit @bind-Text="@Remark" AutoSize />
+</Field>
+
+<Row>
+    <Column>
+        <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnOk">Ok</Button>
+    </Column>
+    <Column>
+        <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnCancel">Terug</Button>
+    </Column>
+</Row>

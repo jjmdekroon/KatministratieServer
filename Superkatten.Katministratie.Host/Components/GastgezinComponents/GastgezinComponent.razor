@@ -1,0 +1,48 @@
+﻿@using Blazorise.SpinKit
+@using Superkatten.Katministratie.Host.Entities
+
+@if(Gastgezin is null)
+{
+    <Div Position="Position.Absolute.Top.Is50.Start.Is50.Translate.Middle">
+        <SpinKit Type="SpinKitType.Chase" Size="40px"/>
+    </Div>
+    return;
+}
+
+<Row Border="Border.Is1" Margin="Margin.Is1">
+    <Column ColumnSize="ColumnSize.Is1.OnDesktop.Is4.OnMobile">
+        <span class="material-icons" style="font-size:100px;">group</span>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is11.OnDesktop.Is8.OnMobile">
+        @if (_editMode == HostFamilyComponentEditMode.DisplayDetailsOnly)
+        {
+            <Button Padding="Padding.Is0" Color="Color.Primary" Clicked="@OnEdit"><span class="material-icons">edit</span></Button>
+            <Button Padding="Padding.Is0" Color="Color.Primary" Clicked="@OnDelete"><span class="material-icons">delete</span></Button>
+            <Button Padding="Padding.Is0" Color="Color.Primary" Clicked="@OnAssignSuperkat"><span class="material-icons">pets</span></Button>
+@*            <Button Disabled="@_disableAdoption" 
+                Padding="Padding.Is0" 
+                Color="Color.Primary" 
+                Clicked="@OnStartAdoption"><span class="material-icons">archive</span></Button>*@
+        }
+
+        @switch(_editMode)
+        {
+            case HostFamilyComponentEditMode.DisplayDetailsOnly:
+                <h4>
+                    <div>@Gastgezin.Naw.Name</div>
+                </h4>
+                <h5>
+                    <div>@Gastgezin.Naw.Address</div>
+                    <div>@Gastgezin.Naw.Postcode</div>
+                    <div>@Gastgezin.Naw.City</div>
+                    <div>@Gastgezin.Naw.Phone</div>
+                    <div>@Gastgezin.Naw.Email</div>
+                </h5>
+                break;
+
+            case HostFamilyComponentEditMode.EditGastgezinNaw:
+                <GastgezinEditComponent Location="@Gastgezin" OnFinish="@OnFinishEdit" />
+                break;
+        }
+    </Column>
+</Row>

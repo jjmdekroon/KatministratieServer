@@ -1,0 +1,19 @@
+﻿ @inject NavigationManager NavigationManager
+  
+<Router AppAssembly="@typeof(App).Assembly">
+
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+
+    <NotFound>
+        @{ 
+            // redirect to index page if not found
+            NavigationManager.NavigateTo("index"); 
+        }
+    </NotFound>
+
+</Router>
+
+<PageProgressAlert />

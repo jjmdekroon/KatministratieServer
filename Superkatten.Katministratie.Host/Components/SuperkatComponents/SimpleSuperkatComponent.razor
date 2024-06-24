@@ -1,0 +1,45 @@
+﻿@using Superkatten.Katministratie.Contract.Entities
+@using Superkatten.Katministratie.Host.Components
+@using Superkatten.Katministratie.Host.Components.SuperkatComponents.Action
+@using Superkatten.Katministratie.Host.Entities
+
+@if (SuperkatView is null)
+{
+    <SpinKit Type="SpinKitType.CircleFade" />
+    return;
+}
+
+<div>
+    <div class="row m-1 mb-2 border" style="border-radius:10px;">
+        <Button>
+            @SuperkatView.Superkat.UniqueNumber
+        </Button>
+        
+        <Button Clicked="@OnEditSuperkat" style="width:80px;">
+            @if (string.IsNullOrEmpty(SuperkatView.Superkat.Name))
+            {
+                <div style="font-size:12px;color:#333333;background:#fefede;padding-bottom:2px;border-radius:6px;">geef naam</div>
+            }
+            else
+            {
+                @SuperkatView.Superkat.Name;
+            }
+        </Button>
+
+        <Button>
+            <BehaviourComponent Behaviour="@SuperkatView.Superkat.Behaviour" />
+        </Button>
+        
+        <Button>
+            <SuperkatGenderComponent GenderIcon="@SuperkatView.GenderIcon" />
+        </Button>
+
+        <Button Class="m-1 rounded-pill" style="width:70px;background:#eeeeee;">
+            @SuperkatView.Superkat.Location.LocationName
+        </Button>
+
+        <Button>
+            <SuperkatActions SuperkatView="@SuperkatView" OnActionExecuted="@ReloadSuperkatDataAsync" />
+        </Button>
+    </div>
+</div>

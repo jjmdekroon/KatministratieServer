@@ -1,0 +1,207 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using Superkatten.Katministratie.Host.Components.Helpers
+@using System.Collections
+
+@attribute [Authorize(Roles = "Administrator")] 
+
+<PageTitle>@KatministratieTitel</PageTitle>
+
+@if (AuthenticationService is null 
+    || Navigation is null 
+    || SuperkattenService is null 
+    || ReportingService is null
+    || _loginModel is null)
+{
+  <Field>Initializing...</Field>
+    return;
+}
+
+<Modal @ref="_authenticationDialog">
+    <ModalContent Centered>
+        <ModalHeader>
+            <ModalTitle>Inloggen</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+          @if (@_isLoggingIn)
+          {
+            <Div Position="Position.Absolute.Top.Is50.Start.Is50.Translate.Middle">
+                <SpinKit Type="SpinKitType.Chase" Size="40px" />
+            </Div>
+            <Field>
+              <TextEdit Placeholder="@_loginModel.Username" />
+            </Field>
+          }
+          else
+          {
+            <Field>
+                <FieldLabel>Gebruikersnaam</FieldLabel>
+                <TextEdit @ref="_textEditLoginName" Role="TextRole.Text"
+                          MaskType="MaskType.RegEx" 
+                            EditMask="^[a-z]*$" 
+                            @bind-Text="@_loginModel.Username" 
+                            Placeholder="Vul de gebruikersnaam in..." 
+                            KeyPress="@OnKeyPress"/>
+            </Field>
+            <Field>
+                <FieldLabel>Wachtwoord</FieldLabel>
+                <TextEdit Role="TextRole.Password" 
+                            @bind-Text="@_loginModel.Password" 
+                            Placeholder="Vul je wachtwoord in..."
+                            KeyPress="@OnKeyPress"/>
+            </Field>
+          }
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">
+              Sluiten
+            </Button>
+            <Button Disabled="@_isLoggingIn" Loading="@_isLoggingIn" Color="Color.Primary" Clicked="@SaveAndHideModal">
+              Ok
+            </Button>            
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+<Fields>
+    <Field Padding="Padding.Is1">
+        @if (UserLoginService?.User is not null)
+        {
+          <Span>
+            <span class="material-icons">face</span>
+              <span>
+                    @UserLoginService?.User.Name
+              </span>
+          </Span>
+        }
+    </Field>
+
+    <Field TextAlignment="TextAlignment.End">
+        <Button Clicked="@OnLoginLogout">
+            @if (UserLoginService.IsAuthenticated)
+            {   
+              <Tooltip Text="Logout">
+                  <span class="material-icons">logout</span>
+              </Tooltip>
+            }
+            else
+            {
+                <Tooltip Text="Login">
+                    <span class="material-icons">face</span>
+                </Tooltip>
+            }
+        </Button>
+   
+        <Button Clicked="@OnRegister">
+            <Tooltip Text="Register">
+                <span class="material-icons">
+                    add_circle_outline
+                </span>
+            </Tooltip>
+        </Button>
+    </Field>
+</Fields>
+
+
+@if (!UserLoginService.IsAuthenticated)
+{
+    <Container>
+        <Field Class="border p-3 mt-5" Style="border-radius:20px">
+            <Div Style="font-size:24px;">
+                @LoginBodyText
+            </Div>
+        </Field>
+    </Container>
+
+    return;
+}
+
+<Divider />
+
+<Container>
+        
+    <HeaderItem Titel="Katten beheer"/>
+
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnCreateSuperkat">
+        <div class="row justify-content-md-center">
+            <div class="col-4 text-right"><span class="material-icons">add</span></div>
+            <div class="col-5 text-left">Nieuwe kat</div>
+        </div>
+    </Button>
+
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnCreateSuperkatPhoto">
+        <div class="row justify-content-md-center">
+            <div class="col-4 text-right"><span class="material-icons">photo_camera</span></div>
+            <div class="col-5 text-left">Maak foto</div>
+        </div>
+    </Button>
+
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnMoveSuperkat">
+        <div class="row justify-content-md-center">
+            <div class="col-4 text-right"><span class="material-icons">exit_to_app</span></div>
+            <div class="col-5 text-left">Verplaats kat</div>
+        </div>
+    </Button>
+    
+    <HeaderItem Titel="Algemeen"/>
+
+    <Divider />
+
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnShowOverviewSuperkatten">
+        <div class="row justify-content-md-center">            
+            <div class="col-4 text-right">                
+                <span class="material-icons">pets</span>
+                <Div Style="position:absolute;right:0px;top:0px;font-size:13px;">
+                    <Badge Position="Position.Relative.Top.Is0.End.Is0" Pill Color="Color.Warning">
+                        @_superkattenInRefugeCount
+                    </Badge>
+                </Div>
+            </div>
+            <div class="col-5 text-left">Superkatten</div>
+        </div>
+    </Button>
+
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnShowNotNeutralized">
+        <div class="row justify-content-md-center">
+            <div class="col-4 text-right">
+                <span class="material-icons">content_cut</span>
+                <Div Style="position:absolute;right:0px;top:0px;font-size:13px;">
+                    <Badge Position="Position.Relative.Top.Is0.End.Is0" Pill Color="Color.Warning">
+                        @_superkattenNotNeutralizedCount
+                    </Badge>
+                </Div>
+            </div>
+            <div class="col-5 text-left">Neutralisatie</div>
+        </div>
+    </Button>
+
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnShowMedicalProcedures">
+        <div class="row justify-content-md-center">
+            <div class="col-4 text-right"><span class="material-icons">vaccines</span></div>
+            <div class="col-5 text-left">Medische handelingen</div>
+        </div>
+    </Button>
+    
+    <Divider />
+
+    <HeaderItem Titel="Gastgezin" />
+
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnShowOverviewGastgezinnen">
+        <div class="row justify-content-md-center">
+            <div class="col-4 text-right"><span class="material-icons">family_restroom</span></div>
+            <div class="col-5 text-left">Gastgezinnen</div>
+        </div>
+    </Button>
+
+    <Divider />
+
+    <HeaderItem Titel="Rapportage"/>
+
+    <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnShowReportingPage">
+        <div class="row justify-content-md-center">
+            <div class="col-4 text-right"><span class="material-icons">text_snippet</span></div>
+            <div class="col-5 text-left">Rapportage</div>
+        </div>
+    </Button>
+</Container>

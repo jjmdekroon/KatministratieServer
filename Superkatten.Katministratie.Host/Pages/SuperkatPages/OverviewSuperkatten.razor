@@ -1,0 +1,72 @@
+﻿@page "/OverviewSuperkatten"
+
+@using Blazorise.SpinKit
+@using Superkatten.Katministratie.Host.Components.Helpers
+@using Superkatten.Katministratie.Host.Components.SuperkatComponents
+
+<PageTitle>Superkatten</PageTitle>
+
+<Row>
+    <Column ColumnSize="ColumnSize.Is7.OnDesktop.Is5.OnMobile">
+        <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnBackHome">Terug</Button>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is2.OnDesktop.Is3.OnMobile">
+        <Check TValue="bool" Checked="@_showSimpleListView" CheckedChanged="@OnChangeSimpleListViewAsync">Simple</Check>
+    </Column>
+</Row>
+
+<WaitForItComponent Visible="Superkatten.Any()" />
+
+<Divider />
+
+<Pagination Padding="Padding.Is1">
+    <PaginationItem Disabled="@IsFirstPage" @onclick="Previous">
+        <PaginationLink>
+            <span aria-hidden="true">«</span>
+        </PaginationLink>
+    </PaginationItem>
+
+    <PaginationItem Disabled="@IsFirstPageSet" @onclick="PreviousPageSet">
+        <PaginationLink style="background-color:darkgray; color:white">
+            <span aria-hidden="true">-@_displayedPageSetCount</span>
+        </PaginationLink>
+    </PaginationItem>        
+
+    @{
+        for (var i = _startPageNumber; i <= _maxDisplayedPageNumber; i++)
+        {
+            var pageNumberAsString = i.ToString().PadLeft(2, '0');
+                <PaginationItem @key="pageNumberAsString" Active="@IsActive(i)">
+                    <PaginationLink Page="@pageNumberAsString" Clicked="SetActive">
+                        @pageNumberAsString
+                    </PaginationLink>
+                </PaginationItem>
+        } 
+    }
+
+    <PaginationItem Disabled="@IsLastPageSet" @onclick="NextPageSet">
+        <PaginationLink style="background-color:darkgray; color:white">
+            <span aria-hidden="true">+@_displayedPageSetCount</span>
+        </PaginationLink>
+    </PaginationItem>        
+    
+    <PaginationItem Disabled="@IsLastPage" @onclick="Next">
+        <PaginationLink>
+            <span aria-hidden="true">»</span>
+        </PaginationLink>
+    </PaginationItem>
+
+</Pagination>
+
+<Divider />
+
+@if (_showSimpleListView)
+{
+  @foreach (var superkat in Superkatten)
+  {
+      <SimpleSuperkatComponent Superkat=superkat />
+  }
+  return;
+}
+
+<SuperkattenListComponent SuperkatItems="@Superkatten"/>

@@ -1,0 +1,36 @@
+﻿@using Superkatten.Katministratie.Contract.Entities
+
+@*TODO: Deze is nog niet goed*@
+
+<Field Horizontal Margin="Margin.Is2">
+    <Fields TextWeight="TextWeight.Light">
+        @switch(State)
+        {
+            case SuperkatState.New:
+                <FieldLabel class="text-white bg-dark">T</FieldLabel>
+                <FieldLabel>NRC</FieldLabel>
+                break;
+
+            case SuperkatState.Promoting:
+                <FieldLabel class="text-white bg-dark">TN</FieldLabel>
+                <FieldLabel>RC</FieldLabel>
+                break;
+
+            case SuperkatState.Relocated:
+                <FieldLabel class="text-white bg-dark">TNR</FieldLabel>
+                <FieldLabel>C</FieldLabel>
+                break;
+
+            case SuperkatState.Done:
+                <FieldLabel><div class="text-white bg-dark">TNRC</div></FieldLabel>
+                <FieldLabel><div class="">C</div></FieldLabel>
+                break;            
+        }
+    </Fields>
+</Field>
+
+
+@code {
+    [Parameter]
+    public SuperkatState State { get; set; }
+}

@@ -1,0 +1,9 @@
+﻿@using Superkatten.Katministratie.Contract.Entities
+
+<Accordion>
+    @foreach (var superkat in SuperkatItems)
+    {
+        <SuperkatComponent Superkat=superkat />
+    }
+</Accordion>
+

@@ -1,0 +1,188 @@
+﻿@page "/SuperkatStatus/{SuperkatId:guid?}"
+@using Superkatten.Katministratie.Contract.Entities
+@using Superkatten.Katministratie.Host.Components.Helpers
+@using Superkatten.Katministratie.Host.Components.SuperkatComponents
+@using Superkatten.Katministratie.Host.Helpers
+@using Superkatten.Katministratie.Host.Services
+@using Superkatten.Katministratie.Host.Components
+@using Superkatten.Katministratie.Host.Entities
+
+@using ContractEntities = Superkatten.Katministratie.Contract.Entities
+
+<h3>SuperkatStatus</h3>
+
+<Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnBackHome">Terug</Button>
+
+<WaitForItComponent Visible="_superkatten.Any()" />
+
+<Divider />
+
+<SelectListComponent DefaultText="Selecteer superkat"
+  TItem="ContractEntities.Superkat"     
+  ItemNames="@_superkatNames"
+  Items="@_superkatten" 
+  OnSelectionChanged="@OnSelectSuperkat" />
+
+@if (_selectedSuperkat is null)
+{
+  <Field>
+    Selecteer een superkat
+  </Field>
+    return;
+}
+
+<Divider />
+
+<Div VerticalAlignment="VerticalAlignment.Middle" TextAlignment="TextAlignment.Center">
+  <SimpleSuperkatComponent Superkat="@_selectedSuperkat"/>
+</Div>
+
+<Divider />
+
+<Steps SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged">
+    <Items>
+        <Step Name="monitoring">
+            <Marker>
+                1
+            </Marker>
+            <Caption>                
+            </Caption>
+        </Step>
+
+        <Step Name="neutralisatie">
+            <Marker>
+                2
+            </Marker>
+            <Caption>
+            </Caption>
+        </Step>
+
+        <Step Name="promotie">
+            <Marker>
+                3
+            </Marker>
+            <Caption>
+            </Caption>
+        </Step>
+
+        @if (!_selectedSuperkat.Retour)
+        {
+            <Step Name="reserved">
+                <Marker>
+                    <Icon Name="IconName.AngleRight" />
+                </Marker>
+                <Caption>
+                </Caption>
+            </Step>
+
+            <Step Name="waitforpayment">
+                <Marker>
+                    <Icon Name="IconName.AngleRight" />
+                </Marker>
+                <Caption>
+                </Caption>
+            </Step>
+        }
+        else
+        {
+            <Step Name="waitforretour">
+                <Marker>
+                    <Icon Name="IconName.Eye" />
+                </Marker>
+                <Caption>
+                </Caption>
+            </Step>
+        }
+
+        <Step Name="done">
+            <Marker>
+                <Icon Name="IconName.Flag" />
+            </Marker>
+            <Caption>
+            </Caption>
+        </Step>
+
+    </Items>
+    <Content>
+        <StepPanel Name="monitoring">
+            <Divider />
+            Monitoren van een kat. Als deze nieuw binnen komt deze in de quarantaine ruimet. Hier verblijft de kat minimaal 5 dagen. Hiermee wordt voorkomen dat eventuele ziektes die de kat kan hebben worden verspreid binnen de opvang.
+        </StepPanel>
+        <StepPanel Name="neutralisatie">
+            <Divider />
+            Kan wordt op social media zoals facebook of website geplaatst. Hiermee kunnen potentiele adoptanten zich aanmelden.
+        </StepPanel>
+        <StepPanel Name="promotie">
+            <Divider />
+            Kat is gereserveerd door een potentiele adoptant
+        </StepPanel>
+        
+        <StepPanel Name="reserved">
+            <Divider />
+            Wachten op betaling door de adoptant
+        </StepPanel>
+        <StepPanel Name="waitforpayment">
+            <Divider />
+            Wachten op betaling door de adoptant
+        </StepPanel>
+
+        <StepPanel Name="waitforretour">
+            <Divider />
+            Kat moet worden teruggeplaatst, hiervoor moet een afspraak worden gemaakt.
+        </StepPanel>
+
+        <StepPanel Name="done">
+            <Divider />
+            Kat is terug of bij een adoptant, superkatten hoeft er verder niet naar te kijken.
+        </StepPanel>
+    </Content>
+</Steps>
+
+@code {
+
+    [Inject] private Navigation _navigation { get; set; } = null!;
+
+    [Inject] private ISuperkattenListService _superkattenListService { get; set; } = null!;
+
+    [Parameter] public Guid SuperkatId { get; set; }
+
+    private IReadOnlyCollection<Superkat> _superkatten = Array.Empty<Superkat>();
+    private IReadOnlyCollection<string> _superkatNames = Array.Empty<string>();
+    private Superkat _selectedSuperkat = null!;
+
+    private string selectedStep = "monitoring";
+
+    protected async override Task OnInitializedAsync()
+    {
+        _superkatten = await _superkattenListService.GetAllSuperkattenAsync();
+        _superkatNames = _superkatten
+          .Select(s => s.UniqueNumber)
+          .ToList();
+    }
+
+    private Task OnSelectedStepChanged(string name)
+    {
+        selectedStep = name;
+
+        return Task.CompletedTask;
+    }
+
+    private void OnBackHome()
+    {
+        _navigation.NavigateTo("/");
+    }
+    private void OnSelectSuperkat(Superkat superkat)
+    {
+        _selectedSuperkat = superkat;
+        SetProcessStepForSelectedSuperkat();
+    }
+
+    private void SetProcessStepForSelectedSuperkat()
+    {
+        if (_selectedSuperkat.Reserved)
+        {
+            selectedStep = "reserved";
+        }
+    }
+
+}

@@ -1,0 +1,24 @@
+﻿@page "/EditSuperkat/{SuperkatId:guid?}"
+
+<Container>
+
+@if (_superkat is null)
+{
+    <Field>Loading...</Field>
+    return;
+}
+
+    <Field>Superkat @_superkat.UniqueNumber</Field>
+    <TextEdit Placeholder="Naam van de kat" @bind-Text="_name" />
+    
+    <Divider />
+
+    <div class="row">
+        <div Class="col-6">
+            <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnCancel">Terug</Button>
+        </div>
+        <div Class="col-6">
+            <Button Block Size="Size.Large" Color="Color.Primary" Clicked="@OnOk">Opslaan</Button>
+        </div>
+    </div>
+</Container>

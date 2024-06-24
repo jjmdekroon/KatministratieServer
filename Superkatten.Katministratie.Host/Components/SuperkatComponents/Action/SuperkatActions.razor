@@ -1,0 +1,34 @@
+﻿@using Superkatten.Katministratie.Host.Entities
+@using Superkatten.Katministratie.Host.Services
+
+@inject ISuperkatActionService _superkatActionService
+
+@if(!SuperkatView.Superkat.Retour)
+{
+    <SuperkatAction
+        OnClickCallback="@ToggleReserve"
+        ActionIcon="@(SuperkatView.Superkat.Reserved 
+            ? "./images/actions/briefcase-fill.svg"
+            : "./images/actions/briefcase.svg")" />
+}
+else
+{
+    <span></span>    
+}
+
+@if(!SuperkatView.IsAtGastgezin)
+{
+    <SuperkatAction
+        OnClickCallback="@ToggleRetour"
+        ActionIcon="@(SuperkatView.Superkat.Retour 
+            ? "./images/actions/arrow-90deg-right.svg" 
+            : "./images/actions/box-arrow-in-right.svg")" />
+}
+    
+<SuperkatAction
+    OnClickCallback="@AddMedicalProcedure"
+    ActionIcon="./images/actions/medical.svg" />
+
+<SuperkatAction
+    OnClickCallback="@ShowSuperkatState"
+    ActionIcon="./images/actions/showState.svg" />

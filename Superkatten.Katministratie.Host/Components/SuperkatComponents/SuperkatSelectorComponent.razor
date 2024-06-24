@@ -1,0 +1,33 @@
+﻿@using Superkatten.Katministratie.Host.Components.Helpers
+
+<Container>
+
+    <HeaderItem Titel="@AvailableCollectionHeader" />
+
+    <Container Class="border">
+        @foreach (var superkat in _availableSuperkatten)
+        {
+            <Button Margin="Margin.Is1" Size="Size.Small" Color="Color.Primary" Clicked="() => { return AddSuperkatToSelectionAsync(superkat); }">
+                @superkat.UniqueNumber<br>
+                @superkat.Name
+            </Button>
+        }
+    </Container>
+
+    <Divider />
+
+    <Field>
+        Let op, als je eenmaal een kat hebt gekozen kan je deze niet meer terugzetten. Als de keuze niet goed is stop dan en begin overnieuw.
+    </Field>
+
+    <HeaderItem Titel="@SelectedCollectionHeader" />
+    <Container Class="border mb-4" Style="height:55px;">
+        @foreach (var superkat in _selectedSuperkatten)
+        {
+            <Button Disabled="@EnableOneWay" Margin="Margin.Is1" Size="Size.Small" Color="Color.Primary" Clicked="() => { return RemoveSuperkatFromSelectionAsync(superkat); }">
+                @superkat.UniqueNumber<br>
+                <Div Style="font-size:10px">@superkat.Name</Div>
+            </Button>
+        }
+    </Container>
+</Container>

@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using Superkatten.Katministratie.Application;
 using Superkatten.Katministratie.Application.Authenticate.Middleware;
 using Superkatten.Katministratie.Application.Configuration;
+using Superkatten.Katministratie.Domain.Entities;
 using Superkatten.Katministratie.Infrastructure;
 using System.Text;
 
@@ -73,7 +74,7 @@ builder.Configuration.AddEnvironmentVariables();
             .RequireAuthenticatedUser()
             .Build();
 
-        /*options.AddPolicy(SuperkattenPolicies.POLICY_ADMINISTRATOR, policy =>
+        options.AddPolicy(SuperkattenPolicies.POLICY_ADMINISTRATOR, policy =>
         {
             var allPermissionValues = (PermissionEnum[])Enum.GetValues(typeof(PermissionEnum));
             var array = allPermissionValues
@@ -100,7 +101,7 @@ builder.Configuration.AddEnvironmentVariables();
             policy.RequireRole(
                 PermissionEnum.Viewer.ToString(),
                 PermissionEnum.Coordinator.ToString()
-            ));*/
+            ));
     });
 
 /*    builder.Services.AddCors(options =>

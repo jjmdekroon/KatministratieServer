@@ -25,18 +25,9 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
             return Task.CompletedTask;
         }
 
-        var userIdClaim = context.User.Claims.FirstOrDefault(c => c.Type == "id");
-        if (userIdClaim is null)
-        {
-            throw new Exception("No claim with user id found");
-        }
-
-        var user = _userAuthorisationRepository.GetUserById(int.Parse(userIdClaim.Value));
-        if (user is null)
-        {
-            throw new Exception($"User not found with id {userIdClaim.Value}");
-        }
-
+        var userIdClaim = context.User.Claims.FirstOrDefault(c => c.Type == "id") ?? throw new Exception("No claim with user id found");
+        var user = _userAuthorisationRepository.GetUserById(int.Parse(userIdClaim.Value)) ?? throw new Exception($"User not found with id {userIdClaim.Value}");
+        
         var hasPermission = user.Permissions.Contains(requirement.Permission);
         if (hasPermission)
         {

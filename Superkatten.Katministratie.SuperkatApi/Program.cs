@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Superkatten.Katministratie.Application;
 using Superkatten.Katministratie.Application.Authenticate.Middleware;
 using Superkatten.Katministratie.Application.Configuration;
-using Superkatten.Katministratie.Domain.Entities;
 using Superkatten.Katministratie.Infrastructure;
-using Superkatten.Katministratie.Infrastructure.Persistence;
 using System.Text;
 
 const string SWAGGER_DOC_VERSION = "v1";
-const string CORS_POLICY_NAME = "DefaultCorsPolicy";
+//const string CORS_POLICY_NAME = "DefaultCorsPolicy";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +40,7 @@ builder.Configuration.AddEnvironmentVariables();
                             Id = "Bearer"
                     }
                 },
-                new string[] {}
+                Array.Empty<string>()
             }
         });
     });
@@ -52,23 +50,30 @@ builder.Configuration.AddEnvironmentVariables();
     builder.Services.AddAuthentication(options => {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+//        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     }).AddJwtBearer(options => {
-        options.SaveToken = true;
         options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters()
         {
+            ValidateIssuerSigningKey = true, //+
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidAudience = null,
             ValidIssuer = null,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(UserAuthorisationConfiguration.Secret))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(UserAuthorisationConfiguration.Secret)),
+            ClockSkew = TimeSpan.Zero
         };
     });
 
     builder.Services.AddAuthorization(options =>
     {
-        options.AddPolicy(SuperkattenPolicies.POLICY_ADMINISTRATOR, policy =>
+        options.DefaultPolicy = new AuthorizationPolicyBuilder()
+            .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+            .RequireAuthenticatedUser()
+            .Build();
+
+        /*options.AddPolicy(SuperkattenPolicies.POLICY_ADMINISTRATOR, policy =>
         {
             var allPermissionValues = (PermissionEnum[])Enum.GetValues(typeof(PermissionEnum));
             var array = allPermissionValues
@@ -95,10 +100,10 @@ builder.Configuration.AddEnvironmentVariables();
             policy.RequireRole(
                 PermissionEnum.Viewer.ToString(),
                 PermissionEnum.Coordinator.ToString()
-            ));
+            ));*/
     });
 
-    builder.Services.AddCors(options =>
+/*    builder.Services.AddCors(options =>
     {
         options.AddPolicy(
             name: CORS_POLICY_NAME, 
@@ -110,7 +115,7 @@ builder.Configuration.AddEnvironmentVariables();
                 builder.AllowAnyHeader();
                 builder.AllowAnyMethod();
             });
-    });
+    });*/
 
     builder.Services.AddLogging();
 }
@@ -139,7 +144,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseMiddleware<JwtMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();
-app.UseCors(CORS_POLICY_NAME);
+//app.UseCors(CORS_POLICY_NAME);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

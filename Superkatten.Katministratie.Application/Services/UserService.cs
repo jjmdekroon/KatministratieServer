@@ -16,15 +16,19 @@ public class UserService : IUserService
     private readonly IJwtUtils _jwtUtils;
     private readonly IUserAuthorisationRepository _userAuthorisationRepository;
     private readonly IUserAuthorisationMapper _userAuthorisationMapper;
+    private readonly ISuperSession _superSession;
+    private User? _user;
 
     public UserService(
         IJwtUtils jwtUtils,
         IUserAuthorisationRepository userAuthorisationRepository,
-        IUserAuthorisationMapper userAuthorisationMapper)
+        IUserAuthorisationMapper userAuthorisationMapper,
+        ISuperSession superSession)
     {
         _jwtUtils = jwtUtils;
         _userAuthorisationRepository = userAuthorisationRepository;
         _userAuthorisationMapper = userAuthorisationMapper;
+        _superSession = superSession;
     }
 
     public AuthenticateResponse Authenticate(AuthenticateRequest model)
@@ -34,21 +38,24 @@ public class UserService : IUserService
             throw new AuthorisationException("Given username may not be null");
         }
 
-        var user = _userAuthorisationRepository.GetUserByName(model.Username.ToLower());
+        _user = _userAuthorisationRepository.GetUserByName(model.Username.ToLower());
 
-        if (user is null)
+        if (_user is null)
         {
             throw new AuthorisationException("Username is incorrect");
         }
 
-        if (!BcryptNet.Verify(model.Password, user.PasswordHash))
+        if (!BcryptNet.Verify(model.Password, _user.PasswordHash))
         {
             throw new AuthorisationException("Password is incorrect");
         }
 
-        // authentication successful
-        var token = _jwtUtils.GenerateToken(user);        
-        return _userAuthorisationMapper.MapToAuthenticateResponse(user, token);
+        // authentication successfull, store all data within
+        var token = _jwtUtils.GenerateToken(_user);
+        
+        _superSession?.StartWithUser(_user);
+
+        return _userAuthorisationMapper.MapToAuthenticateResponse(_user, token);
     }
 
     public IEnumerable<User> GetAll()

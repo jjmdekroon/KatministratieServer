@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Superkatten.Katministratie.Application.Services;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Superkatten.Katministratie.Application.Authenticate.Middleware;
@@ -14,16 +16,15 @@ public class JwtMiddleware
         _next = next;
     }
 
-    public async Task Invoke(HttpContext context, IUserService userService, IJwtUtils jwtUtils)
+    public async Task Invoke(HttpContext context, IUserService userService, IJwtUtils jwtUtils, ISuperSession superSession)
     {
         var authorisationKey = context.Request.Headers["Authorization"].FirstOrDefault();
         var token = authorisationKey?.Split(" ").Last();
-
-        var userId = jwtUtils.ValidateToken(token ?? string.Empty);
-        if (userId is not null)
+        var claimsPrincipal = jwtUtils.ValidateToken(token ?? string.Empty, superSession?.User?.ToString() ?? "d1u2m3m4y");
+        if (claimsPrincipal is null)
         {
-            // attach user to context on successful jwt validation
-            context.Items["user"] = userService.GetById(userId.Value);
+            // When there is something wrong with the token stop the session immediately
+            superSession?.Stop();
         }
 
         await _next(context);

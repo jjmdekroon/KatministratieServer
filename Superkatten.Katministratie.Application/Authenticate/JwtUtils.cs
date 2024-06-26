@@ -18,9 +18,12 @@ public class JwtUtils : IJwtUtils
         var key = Encoding.ASCII.GetBytes(UserAuthorisationConfiguration.Secret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            Issuer = user.ToString(),
+            Audience = "User",
             Subject = new ClaimsIdentity(new[] 
             { 
-                new Claim("id", user.Id.ToString()) 
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, PermissionEnum.Viewer.ToString())
             }),
             Expires = DateTime.UtcNow.AddDays(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -29,38 +32,40 @@ public class JwtUtils : IJwtUtils
         return tokenHandler.WriteToken(token);
     }
 
-    public int? ValidateToken(string token)
+    public ClaimsPrincipal? ValidateToken(string token, string? user)
     {
-        if (token == null)
+        if (string.IsNullOrEmpty(token))
         {
-            return null;
+            return default;
+        }
+        
+        if (string.IsNullOrEmpty(user))
+        {
+            return default;
         }
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(UserAuthorisationConfiguration.Secret);
         try
         {
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            var claimsPrincipal = tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
+                ValidIssuer = user,
+                ValidAudience = "User",
                 IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
-                ClockSkew = TimeSpan.Zero
             }, out var validatedToken);
 
-            // Use the id claim to check the user.
-            var jwtToken = (JwtSecurityToken)validatedToken;
-            var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
-
             // return user id from JWT token if validation successful
-            return userId;
+            return claimsPrincipal;
         }
-        catch
+        catch (SecurityTokenExpiredException)
         {
-            // return null if validation fails
-            return null;
+            throw new ApplicationException("Token has expired.");
+        }
+        catch(Exception ex)
+        {
+            throw new ApplicationException("Unknown error", ex);
         }
     }
 }

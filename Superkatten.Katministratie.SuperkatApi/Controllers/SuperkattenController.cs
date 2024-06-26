@@ -62,10 +62,10 @@ namespace Superkatten.Katministratie.SuperkatApi.Controllers
             catch (Exception ex)
             {
                 var messageText = ex.Message;
-                if (ex.InnerException.Message != string.Empty)
+                if (ex.InnerException is not null && ex.InnerException?.Message != string.Empty)
                 {
                     messageText += Environment.NewLine;
-                    messageText += ex.InnerException.Message;
+                    messageText += ex.InnerException?.Message;
                 }
                 return Problem(messageText);
             }

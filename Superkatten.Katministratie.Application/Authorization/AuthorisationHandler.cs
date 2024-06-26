@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Superkatten.Katministratie.Application.Services;
 using Superkatten.Katministratie.Domain.Entities;
 using Superkatten.Katministratie.Infrastructure.Interfaces;
 using System;
@@ -12,34 +13,27 @@ namespace Superkatten.Katministratie.Application.Authorization;
 internal class AuthorisationHandler : IAuthorizationHandler
 {
     private readonly IUserAuthorisationRepository _userAuthorisationRepository;
+    private readonly ISuperSession _superSession;
 
-    public AuthorisationHandler(IUserAuthorisationRepository userAuthorisationRepository)
+    public AuthorisationHandler(
+        IUserAuthorisationRepository userAuthorisationRepository,
+        ISuperSession superSession
+    )
     {
         _userAuthorisationRepository = userAuthorisationRepository;
+        _superSession = superSession;
     }
 
     public Task HandleAsync(AuthorizationHandlerContext context)
     {
-        var userId = -1;
-        try 
-        {
-            _ = int.TryParse(context.User.Claims.First(c => c.Type == "user").Value, out userId); 
-        } 
-        catch (Exception) 
-        { 
-        };
-
-        var user = _userAuthorisationRepository
-            .GetAllUsers()
-            .FirstOrDefault(u => u.Id == userId);
-
+        var user = _superSession.User;
         if (user is null)
         {
             context.Fail(new AuthorizationFailureReason(this, "No user logged in."));
             return Task.CompletedTask;
         }
 
-        foreach(var requirement in context.Requirements)
+        foreach(var requirement in context.PendingRequirements)
         {
 
             if (requirement.GetType() == typeof(RolesAuthorizationRequirement))
@@ -51,13 +45,10 @@ internal class AuthorisationHandler : IAuthorizationHandler
                 if (hasPermission)
                 {
                     context.Succeed(requirement);
-                    return Task.CompletedTask;
                 }
             }
         }
 
-        var failException = new AuthorizationFailureReason(this, "User is not authorized to use this function");
-        context.Fail(failException);
         return Task.CompletedTask;
     }
 }

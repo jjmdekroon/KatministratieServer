@@ -11,12 +11,7 @@ namespace Superkatten.Katministratie.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<SuperkattenDbContext>(
-                //options =>
-                //{
-                //    options.UseSqlite("Data Source=./katministratie.db;");
-                //}
-            );
+            services.AddDbContext<SuperkattenDbContext>();
 
             services.AddTransient<ISuperkattenRepository, SuperkattenRepository>();
             services.AddTransient<ILocationRepository, LocationRepository>();

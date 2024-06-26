@@ -36,10 +36,12 @@ namespace Superkatten.Katministratie.Application
             services.AddTransient<IClientSecrets, ClientSecrets>();
             services.AddTransient<IAdoptionService, AdoptionService>();
 
+            services.AddTransient<IAuthorizationHandler, AuthorisationHandler>();
+
             services.AddScoped<IJwtUtils, JwtUtils>();
             services.AddScoped<IUserService, UserService>();
 
-            services.AddTransient<IAuthorizationHandler, AuthorisationHandler>();
+            services.AddSingleton<ISuperSession, SuperSession>();
 
             return services;
         }

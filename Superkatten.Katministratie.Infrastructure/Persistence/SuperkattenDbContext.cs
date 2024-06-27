@@ -22,7 +22,7 @@ public class SuperkattenDbContext : DbContext
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
-        DbPath = System.IO.Path.Join("", "katministratie.db");
+        DbPath = System.IO.Path.Join("~./", "katministratie.db");
 
         Database.EnsureCreated();
     }

@@ -10,7 +10,6 @@ using Superkatten.Katministratie.Host.Services;
 using Superkatten.Katministratie.Host.Services.Authentication;
 using Superkatten.Katministratie.Host.Services.Http;
 using Superkatten.Katministratie.Host.Services.Interfaces;
-using System.Globalization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -27,7 +26,7 @@ builder.Services.AddTransient<ISettingsService, SettingsService>();
 builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
 
 var urlApi = Environment.GetEnvironmentVariable("APPSETTING_UriSuperkattenApi");
-urlApi ??= "https://superkattenapi.azurewebsites.net/";
+urlApi ??= "https://localhost:5000/";
 //urlApi ??= "https://localhost:7171/";
 
 builder.Services.AddTransient(s =>

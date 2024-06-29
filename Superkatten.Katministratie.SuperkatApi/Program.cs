@@ -141,7 +141,7 @@ else
 // see: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-6.0#middleware-order
 //
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseRouting();
 app.UseMiddleware<JwtMiddleware>();
 app.UseMiddleware<ErrorHandlerMiddleware>();

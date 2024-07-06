@@ -26,8 +26,8 @@ builder.Services.AddTransient<ISettingsService, SettingsService>();
 builder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
 
 var urlApi = Environment.GetEnvironmentVariable("APPSETTING_UriSuperkattenApi");
-urlApi ??= "https://localhost:5000/";
-//urlApi ??= "https://localhost:7171/";
+//urlApi ??= "https://192.168.2.181:90/";
+urlApi ??= "https://localhost:7171/";
 
 builder.Services.AddTransient(s =>
 {

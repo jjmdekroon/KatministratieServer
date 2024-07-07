@@ -39,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{3AA2B3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{CC01BA1F-DFA2-4CDE-B7FA-CF203BB4B1BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Superkatten.Katministratie.GUi", "Superkatten.Katministratie.GUi\Superkatten.Katministratie.GUi.csproj", "{5073782C-6C61-4ECF-915B-7781530B5080}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{CC26F031-0BDB-4C9A-88BD-EB2CC2C31091}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC26F031-0BDB-4C9A-88BD-EB2CC2C31091}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC26F031-0BDB-4C9A-88BD-EB2CC2C31091}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5073782C-6C61-4ECF-915B-7781530B5080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5073782C-6C61-4ECF-915B-7781530B5080}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5073782C-6C61-4ECF-915B-7781530B5080}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5073782C-6C61-4ECF-915B-7781530B5080}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +90,7 @@ Global
 		{0D9EFB5D-64DD-4C07-8D9E-095E8A4FE9F9} = {3F52E7A8-2B63-4734-AEAE-E514FC358D21}
 		{3AA2B353-CB65-445B-B818-9B6A31C4D672} = {3F52E7A8-2B63-4734-AEAE-E514FC358D21}
 		{CC01BA1F-DFA2-4CDE-B7FA-CF203BB4B1BF} = {3F52E7A8-2B63-4734-AEAE-E514FC358D21}
+		{5073782C-6C61-4ECF-915B-7781530B5080} = {A60B41D9-C0AA-4199-93FD-D75C76A6FBB9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CC434EE0-E851-4CBB-BF31-23462A9160ED}
